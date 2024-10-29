@@ -7,19 +7,21 @@ import DividerOr from '../../Common/Components/Divider/DivideOr';
 import SocialMediaIcons from '../../Common/Components/SocialMediaIcons/SocialMediaIcons';
 import TextWithLink from '../../Common/Components/TextWithLink/TextWithLink';
 
-export default function Login() {
+export default function Register() {
     return (
-        <div className="login-page">
-            <div className="carousel">
-            </div>
-            <div className="login-form" style={{ border: '1px solid white', margin: '10px', padding: '25px', borderRadius: '10px' }}>
-                <h1>Login</h1>
+        <div className="register-page">
+            
+            <div className="Register-form" style={{ border: '1px solid white', margin: '10px', padding: '25px', borderRadius: '10px' }}>
+                <h1>Register</h1>
+                <CustomTextField label="First Name" placeholder="Enter your First Name" />
+                <CustomTextField label="Last Name" placeholder="Enter your Last Name" />
                 <CustomTextField label="Email" placeholder="Enter your email" />
                 <CustomTextField label="Password" placeholder="Enter your password" />
-                <Btn name={"Login"} path={"/dashboard"} />
+                <CustomTextField label="Confirm Password" placeholder="Enter your password again" />
+                <Btn name={"SignUp"} />
                 <DividerOr />
                 <SocialMediaIcons />
-                <TextWithLink text="Don't have an account?" linkName="Register" url="/register"/>
+                <TextWithLink text="Already have an acoount?" linkName="Login" url="/login"/>
             </div>
         </div>
     );

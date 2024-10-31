@@ -1,18 +1,28 @@
 import * as React from 'react';
-
+import '../Registration/Registration.css'
 import Btn from '../../Common/Components/Button/Btn';
 import { margin } from '@mui/system';
 import CustomTextField from '../../Common/Components/CustomTextField/CustomTextField';
 import DividerOr from '../../Common/Components/Divider/DivideOr';
 import SocialMediaIcons from '../../Common/Components/SocialMediaIcons/SocialMediaIcons';
 import TextWithLink from '../../Common/Components/TextWithLink/TextWithLink';
+import logo from '../../assets/green logo.png';
+
 
 export default function Register() {
     return (
-        <div className="register-page">
-            
-            <div className="Register-form" style={{ border: '1px solid white', margin: '10px', padding: '25px', borderRadius: '10px' }}>
-                <h1>Register</h1>
+        <div
+            className="register-page"
+            style={{height: 'auto', // Set height to full viewport height
+                
+            }}
+        >
+            <div
+                className="Register-form"
+                
+            >
+                <img src={logo} alt="logo" style={{ width: '300px' }} />
+                <h4>Register Now and Take Charge!</h4>
                 <CustomTextField label="First Name" placeholder="Enter your First Name" />
                 <CustomTextField label="Last Name" placeholder="Enter your Last Name" />
                 <CustomTextField label="Email" placeholder="Enter your email" />
@@ -21,7 +31,7 @@ export default function Register() {
                 <Btn name={"SignUp"} />
                 <DividerOr />
                 <SocialMediaIcons />
-                <TextWithLink text="Already have an acoount?" linkName="Login" url="/login"/>
+                <TextWithLink text="Already have an account?" linkName="Login" url="/login" />
             </div>
         </div>
     );

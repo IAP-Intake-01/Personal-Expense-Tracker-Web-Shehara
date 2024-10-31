@@ -9,7 +9,7 @@ export default function Btn({name , path}){
 
 
     return(
-        <Button variant="solid" color="primary" onClick={handleClick} style={{ marginTop: '30px', width:'100%'}}>
+        <Button variant="solid" color="primary" onClick={handleClick} style={{ marginTop: '20px', width:'100%'}}>
                     {name}
                 </Button>
     )

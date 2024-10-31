@@ -1,0 +1,25 @@
+.register-page{
+    height: auto;
+    padding: 20px;
+      
+}
+.Register-form{  
+        border: 1px solid rgb(189, 189, 189);
+        margin: 10px;
+        padding: 25px;
+        border-radius: 10px;
+        min-width:'350px';
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        
+}
+
+@media (max-width: 1440px) {
+    .Register-form {
+        width: 350px; /* or another smaller size */
+         /* possibly reduced padding */
+    }
+}

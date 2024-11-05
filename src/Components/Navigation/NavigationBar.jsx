@@ -25,10 +25,10 @@ export default function NavigationBar({ open, handleDrawerToggle }) {
     const theme = useTheme();
 
     return (
-        <AppBar position="fixed" open={open}>
-            <Toolbar>
+        <AppBar position="fixed" open={open} style={{ backgroundColor: 'blue' }}>
+            <Toolbar style={{ backgroundColor: 'blue' }}>
                 <IconButton
-                    color="inherit"
+                    color="blue"
                     aria-label="toggle drawer"
                     onClick={handleDrawerToggle} // Use the passed function
                     edge="start"
@@ -41,7 +41,7 @@ export default function NavigationBar({ open, handleDrawerToggle }) {
                     <MenuIcon />
                 </IconButton>
                 
-                <Typography variant="h6" noWrap component="div">
+                <Typography variant="h6" noWrap component="div" style={{ color:'white' }}>
                     Mini variant drawer
                 </Typography>
             </Toolbar>

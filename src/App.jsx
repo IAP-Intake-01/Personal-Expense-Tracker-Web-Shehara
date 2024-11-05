@@ -5,6 +5,7 @@ import './App.css'
 import Register from './pages/Registration/Registration'
 import DashboardLayoutBasic from './pages/Dashboard/Dashboard'
 
+
 function App() {
   const [count, setCount] = useState(0)
 

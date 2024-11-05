@@ -1,16 +1,15 @@
-import { Button,} from '@mui/joy';
-import { useNavigate } from 'react-router-dom';
-export default function Btn({name , path}){
-    const navigate = useNavigate();
+import { Button } from '@mui/joy';
+import React from 'react';
 
-    const handleClick = () => {
-        navigate(path);
-    };
-
-
-    return(
-        <Button variant="solid" color="primary" onClick={handleClick} style={{ marginTop: '30px', width:'100%'}}>
-                    {name}
-                </Button>
-    )
+export default function Btn({ name, onClick }) {
+    return (
+        <Button
+            variant="solid"
+            color="primary"
+            onClick={onClick}
+            style={{ marginTop: '20px', width: '100%' }}
+        >
+            {name}
+        </Button>
+    );
 }

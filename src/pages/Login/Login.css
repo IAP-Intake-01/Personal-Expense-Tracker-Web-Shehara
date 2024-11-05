@@ -1,0 +1,77 @@
+/* General styles for headings */
+h1, h4 {
+    color: rgb(23, 80, 155);
+    margin: 5px;
+}
+
+/* Main layout for large screens */
+.login-page {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh; /* Full viewport height */
+}
+
+/* Carousel taking 3 parts of the ratio */
+.carousel {
+    flex: 3;
+    height: 100vh;
+}
+
+/* Login form taking 1 part of the ratio */
+.login-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    border-radius: 10px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+    /* Tablet view */
+    .login-page {
+        flex-direction: column; /* Stack carousel and login vertically */
+        align-items: center; /* Center align the login form */
+        height: 100vh;
+    }
+
+    .carousel {
+        display: none; /* Hide carousel on tablets */
+    }
+
+    .login-form {
+        width: 33.33vw; /* 1/3 of viewport width */
+        max-width: 400px; /* Optional max width */
+        padding: 10px; /* Padding on sides */
+        height: auto; /* Adjust to content height */
+        border: 1px solid rgb(189, 189, 189); /* Add border for tablet screens */
+        border-radius: 10px; /* Rounded corners for tablet */
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile view */
+    .login-page {
+        flex-direction: column; /* Stack elements vertically */
+        height: auto; /* Let height adjust to content */
+    }
+
+    .carousel {
+        display: none; /* Hide carousel on mobile */
+    }
+
+    .login-form {
+        width: calc(100% - 20px); /* Full width minus padding */
+        max-width: 400px; /* Limit max width */
+        padding: 10px; /* Left and right padding */
+        margin: 0 auto; /* Center the form */
+        height: auto; /* Adjust height to fit content */
+        border: 1px solid rgb(189, 189, 189); /* Add border for mobile screens */
+        border-radius: 10px; /* Rounded corners for mobile */
+    }
+}

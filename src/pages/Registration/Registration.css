@@ -1,9 +1,30 @@
-.register-page{
+.register-page {
     height: auto;
     padding: 20px;
-      
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Required for the pseudo-element */
+    background-color: hsla(123, 32%, 60%, 0.541); /* Optional: A light overlay for contrast */
 }
+
+.register-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(../../assets/c.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.5; /* Sets image transparency to 50% */
+    z-index: -1; /* Places the image behind the content */
+}
+
 .Register-form{  
+    background-color: rgba(255, 255, 255, 0.753);
         border: 1px solid rgb(189, 189, 189);
         margin: 10px;
         padding: 25px;
@@ -22,4 +43,7 @@
         width: 350px; /* or another smaller size */
          /* possibly reduced padding */
     }
+}
+*{
+    
 }

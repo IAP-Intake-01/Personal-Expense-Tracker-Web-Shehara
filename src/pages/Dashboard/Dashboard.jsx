@@ -1,61 +1,116 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import SideDrawer from '../../Components/Drawer/Drawer';
-import NavigationBar from '../../Components/Navigation/NavigationBar';
+import { extendTheme } from '@mui/material/styles';
+import { Grid } from '@mui/material';
+import AppBar from '../../Components/AppBar/AppBar';
+import Sidebar from '../../Components/SideBar/SideBar';
+import Home from './Home';
+import AddExpense from '../Expenses/NewExpense';
+import MonthlySummary from '../Reports/MonthlySummary';
+import YearlySummary from '../Reports/YearlySummary';
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
+const demoTheme = extendTheme({
+  colorSchemes: { light: true, dark: true },
+  colorSchemeSelector: 'class',
+  breakpoints: {
+    values: { xs: 0, sm: 600, md: 600, lg: 1200, xl: 1536 },
+  },
+});
 
-export default function MiniDrawer() {
-  const [open, setOpen] = React.useState(false);
+export default function DashboardLayoutBasic(props) {
+  const { window } = props;
+  const [activeTab, setActiveTab] = React.useState('dashboard');
 
-  const handleDrawerToggle = () => {
-    setOpen(!open);
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Home />;
+      case 'addExpense':
+        return <AddExpense />;
+      case 'monthlySummary':
+        return <MonthlySummary />;
+      case 'yearlySummary':
+        return <YearlySummary />;
+      default:
+        return null;
+    }
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <NavigationBar open={open} handleDrawerToggle={handleDrawerToggle} />
-      <SideDrawer open={open} handleDrawerToggle={handleDrawerToggle} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <Typography sx={{ marginBottom: 2 }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-          enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-          imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-          Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-          Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-          nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-          leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-          feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-          consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-          sapien faucibus et molestie ac.
-        </Typography>
-        <Typography sx={{ marginBottom: 2 }}>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-          eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-          neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-          tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-          sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-          tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-          gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-          et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-          tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
-      </Box>
-    </Box>
+    <>
+      {/* AppBar positioned at the top */}
+      <AppBar />
+      
+      {/* Main layout with Sidebar and Content */}
+      <Grid container style={{ height: 'calc(100vh - 64px)' }}> {/* Adjust height to be below AppBar */}
+        {/* Sidebar on the left */}
+        <Grid item xs={3} md={2}>
+          <Sidebar onTabChange={(tab) => setActiveTab(tab)} />
+        </Grid>
+
+        {/* Content area on the right */}
+        <Grid item xs={9} md={10} style={{ padding: '20px', overflowY: 'auto' }}>
+          {renderContent()}
+        </Grid>
+      </Grid>
+    </>
   );
 }
+
+
+// import * as React from 'react';
+// import { extendTheme, styled } from '@mui/material/styles';
+// import { CircularProgress, Typography, Grid } from '@mui/material';
+// import AppBar from '../../Components/AppBar/AppBar';
+// import Sidebar from '../../Components/SideBar/SideBar';
+// import Home from './Home';
+// import AddExpense from '../Expenses/NewExpense';
+// // import MonthlySummary from '../Reports/MonthlySummary';
+// // import YearlySummary from '../Reports/YearlySummary';
+
+// const demoTheme = extendTheme({
+//   colorSchemes: { light: true, dark: true },
+//   colorSchemeSelector: 'class',
+//   breakpoints: {
+//     values: { xs: 0, sm: 600, md: 600, lg: 1200, xl: 1536 },
+//   },
+// });
+
+// export default function DashboardLayoutBasic(props) {
+//   const { window } = props;
+//   const [activeTab, setActiveTab] = React.useState('dashboard');
+
+//   const renderContent = () => {
+//     switch (activeTab) {
+//       case 'dashboard':
+//         return <Home />;
+//       case 'addExpense':
+//         return <AddExpense />;
+//       case 'monthlySummary':
+//         return <MonthlySummary />;
+//       case 'yearlySummary':
+//         return <YearlySummary />;
+//       default:
+//         return null;
+//     }
+//   };
+
+//   return (
+//     <>
+//       {/* AppBar positioned at the top */}
+//       <AppBar />
+      
+//       {/* Main layout with Sidebar and Content */}
+//       <Grid container style={{ height: 'calc(100vh - 64px)' }}> {/* Adjust height to be below AppBar */}
+//         {/* Sidebar on the left */}
+//         <Grid item xs={3} md={2}>
+//           <Sidebar onTabChange={(tab) => setActiveTab(tab)} />
+//         </Grid>
+
+//         {/* Content area on the right */}
+//         <Grid item xs={9} md={10} style={{ padding: '20px', overflowY: 'auto' }}>
+//           {renderContent()}
+//         </Grid>
+//       </Grid>
+//     </>
+//   );
+// }

@@ -1,24 +1,31 @@
-import { useState } from 'react'
-import Login from './pages/Login/Login'
-import { BrowserRouter, Route ,Routes} from 'react-router-dom'
-import './App.css'
-import Register from './pages/Registration/Registration'
-import DashboardLayoutBasic from './pages/Dashboard/Dashboard'
-
+import { useEffect, useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import './App.css';
+import Login from './pages/Login/Login';
+import Register from './pages/Registration/Registration';
+import DashboardLayoutBasic from './pages/Dashboard/Dashboard';
+import PrivateRoute from './Components/PrivateRoute';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('user_jwt');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<DashboardLayoutBasic/>} />
-        </Routes>
-      </BrowserRouter>
-  )
+    <Routes>
+      <Route path="/" element={isAuthenticated ? <DashboardLayoutBasic /> : <Login />} />
+      <Route path="/login" element={isAuthenticated ? <DashboardLayoutBasic /> : <Login />} />
+      <Route path="/register" element={<Register />} />
+      
+      {/* Protected Route for Dashboard */}
+      <Route path="/dashboard" element={<PrivateRoute isAuthenticated={isAuthenticated} element={<DashboardLayoutBasic />} />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;

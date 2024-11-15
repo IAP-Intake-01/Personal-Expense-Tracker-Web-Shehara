@@ -7,7 +7,7 @@ export default function Btn({ name, onClick }) {
             variant="solid"
             color="primary"
             onClick={onClick}
-            style={{ marginTop: '20px', width: '100%' }}
+            sx={{ marginTop: '20px', width: '100%' }}
         >
             {name}
         </Button>

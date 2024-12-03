@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { BarChart } from '@mui/x-charts/BarChart';
-import YearlySummaryCards from '../../Components/YearlyCards/YearlyCards';
 import {jwtDecode} from 'jwt-decode'; // Make sure to install jwt-decode: `npm install jwt-decode`
 
-export default function YearlySummaryChart() {
+const YearlySummaryCards = () => {
   const [data, setData] = useState({ years: [], categories: [], groupedData: [] });
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState(null);
@@ -22,8 +20,6 @@ export default function YearlySummaryChart() {
       if (!response.ok) throw new Error('Failed to fetch user data');
 
       const [data] = await response.json();
-      console.log('Fetched User Data:', data);
-
       if (data) {
         setUserId(data.user_id);
       } else {
@@ -67,23 +63,39 @@ export default function YearlySummaryChart() {
     return <p>Loading...</p>;
   }
 
-  // Prepare data for the chart
-  const xAxisData = data.categories; // Categories are used for the x-axis
-  const seriesData = data.groupedData.map((yearData) => ({
-    label: yearData.year.toString(),
-    data: yearData.totals.map((total) => parseFloat(total)),
-  }));
-
   return (
-    <div>
-    
-    <BarChart
-      xAxis={[{ scaleType: 'band', data: xAxisData }]}
-      series={seriesData}
-      width={800}
-      height={400}
-    />
-    <YearlySummaryCards/>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px' }}>
+      {data.groupedData.map((yearData, index) => (
+        <div
+          key={yearData.year}
+          style={{
+            border: '1px solid #ddd',
+            borderRadius: '8px',
+            padding: '16px',
+            width: '300px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          <h3 style={{ textAlign: 'center', margin: '0 0 16px 0' }}>Year: {yearData.year}</h3>
+          <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
+            {data.categories.map((category, i) => (
+              <li
+                key={category}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '8px',
+                }}
+              >
+                <span>{category}</span>
+                <span>Rs. {parseFloat(yearData.totals[i]).toFixed(2)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
-}
+};
+
+export default YearlySummaryCards;

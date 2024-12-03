@@ -17,6 +17,7 @@ import { CircularProgress, Typography } from '@mui/material';
 import NewExpense from '../Expenses/AddNewExpense';
 import AppBar from '../../Components/AppBar/AppBar';
 import Sidebar from '../../Components/SideBar/SideBar'
+import './Home.css'
 
 const NAVIGATION = [
     { kind: 'header', title: 'Main items' },
@@ -117,33 +118,26 @@ export default function Home(props) {
     };
 
     return (
+        <div className='full'>
+            <NewExpense />
+            <div className='main'>
 
-
-        <>
-            <Grid container spacing={2}>
-
-                <Grid item xs={12} md={12}>
+                <div className='piechart'>
                     {isLoadingPie ? (
                         <Skeleton height={300} />
                     ) : (
                         <PieChart />
                     )}
-                </Grid>
-                <Grid item xs={12} md={6}>
+                </div>
+                <div style={{ width:'650px' }} className='barChart'>
                     {isLoadingYear ? (
                         <Skeleton height={300} />
                     ) : (
                         <YearChart />
                     )}
-                </Grid>
+                </div>
 
-                {/* Loading placeholders */}
-                <Grid item xs={12}>
-                    <NewExpense />
-                </Grid>
-              
-                
-            </Grid>
-        </>
+            </div>
+        </div>
     );
 }

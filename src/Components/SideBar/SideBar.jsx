@@ -4,30 +4,45 @@ import './SideBar.css';
 import profile from '../../assets/profilepic.jpg';
 import { jwtDecode } from 'jwt-decode'; // Correct import for named export
 
+
 const Sidebar = ({ onTabChange }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [profileName, setProfileName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Function to fetch user data from the API
   const fetchUserProfile = async () => {
-    const token = localStorage.getItem('user_jwt');
+    const token = localStorage.getItem('authToken');
     if (token) {
       try {
-        // Decode the JWT token to get user ID or other information
-        const decoded = jwtDecode(token); // Correct usage of jwtDecode
-        const userId = decoded.userId; // Adjust based on your JWT structure
+        // Decode the JWT token
+        const decoded = jwtDecode(token);
+        console.log('Decoded JWT:', decoded);
 
-        // Call your API to fetch user details using the userId
-        const response = await fetch(`http://localhost:3000/api/users/${userId}`);
-        const data = await response.json();
+        const email = decoded.email;
+        console.log('User Email:', email);
 
-        // Assuming the response has 'first_name' and 'last_name' fields
-        if (data) {
+        // Fetch user profile data using email
+        const response = await fetch(`http://localhost:3000/api/auth/user/${email}`);
+        if (response.ok) {
+          const [data] = await response.json(); // Assuming the API response is an array
+          console.log('Fetched User Data:', data);
+
+          // Concatenate first_name and last_name
           setProfileName(`${data.first_name} ${data.last_name}`);
+        } else {
+          console.error('Failed to fetch user profile.');
+          setProfileName('Guest User'); // Fallback name
         }
       } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error decoding token or fetching user profile:', error);
+        setProfileName('Guest User'); // Fallback name
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      console.warn('No JWT found in localStorage.');
+      setProfileName('Guest User'); // Fallback name
+      setIsLoading(false);
     }
   };
 
@@ -37,7 +52,7 @@ const Sidebar = ({ onTabChange }) => {
 
   const handleNavigation = (tab) => {
     setActiveTab(tab); // Set the active tab for styling
-    onTabChange(tab); // Notify DashboardLayoutBasic of the active tab change
+    onTabChange(tab); // Notify parent component of the active tab change
   };
 
   return (
@@ -51,12 +66,14 @@ const Sidebar = ({ onTabChange }) => {
               <img
                 src={profile}
                 alt="Profile"
-                className="w-full h-full object-cover"
+                className="profilepic"
+                onError={(e) => (e.target.src = {profile})}
               />
             </div>
-            {/* Display profile name here */}
-            <h3 className="profile-name">{profileName || 'Loading...'}</h3>
-            <p className="profile-balance">$5,240</p>
+            {/* Display profile name or loading state */}
+            <h3 className="profile-name">
+              {isLoading ? 'Loading...' : profileName}
+            </h3>
           </div>
         </div>
 

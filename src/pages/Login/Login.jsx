@@ -8,6 +8,7 @@ import SocialMediaIcons from '../../Common/Components/SocialMediaIcons/SocialMed
 import TextWithLink from '../../Common/Components/TextWithLink/TextWithLink';
 import logo from '../../assets/green logo.png';
 import Carousel from '../../Components/Carousel/Carousel';
+import axios from 'axios';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -16,24 +17,30 @@ export default function Login() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        setError(null);
+        setError(null);  // Reset error message
 
         try {
-            const response = await axios.post('/api/login', { username, password });
-             
+            // Send email and password to the backend for authentication
+            const response = await axios.post('http://localhost:3000/api/auth/login', { email, password });
 
-            if (response.ok) {
-                const { token, userId } = response.data;
-                localStorage.setItem('authToken', token);
-                localStorage.setItem('userId', userId); // Store JWT in localStorage with a unique key
-                navigate('/dashboard'); // Redirect to dashboard
+            // Check if the response contains a valid token
+            if (response.data && response.data.token) {
+                // Store JWT token in localStorage (you can also store the email or other info if needed)
+                localStorage.setItem('authToken', response.data.token);
+                console.log(response.data.token);
+                console.log(email, password);
+                console.log('Navigating to dashboard...');
+                // Redirect to dashboard
+                navigate('/dashboard');
             } else {
-                setError('Invalid email or password');
+                setError('Invalid email or password');  // If no token is found in response
             }
         } catch (err) {
-            setError('Server error. Please try again later.');
+            console.error('Login error:', err.response || err.message || err);  // Log the error
+            setError('Server error. Please try again later.');  // Display error message
         }
     };
+
 
     return (
         <div className="login">
@@ -49,13 +56,20 @@ export default function Login() {
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        id="email"        // Add id
+                        name="email"      // Add name
+                        autoComplete="email" // Optional for autofill
                     />
+
                     <CustomTextField
                         label="Password"
                         placeholder="Enter your password"
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        id="password"     // Add id
+                        name="password"   // Add name
+                        autoComplete="current-password" // Optional for autofill
                     />
                     <Btn name="Login" onClick={handleLogin} />
                     {error && <p className="error">{error}</p>}

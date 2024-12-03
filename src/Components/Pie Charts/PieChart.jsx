@@ -1,124 +1,118 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Slider from '@mui/material/Slider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { PieChart } from '@mui/x-charts/PieChart';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import axios from 'axios'; // Ensure axios is installed
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 export default function PieAnimation() {
-  const [radius, setRadius] = useState(50);
-  const [itemNb, setItemNb] = useState(5);
-  const [skipAnimation, setSkipAnimation] = useState(false);
-  const [userId, setUserId] = useState('');
+  const [userId, setUserId] = useState(null);
   const [categoryData, setCategoryData] = useState([]);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleItemNbChange = (event, newValue) => {
-    setItemNb(newValue);
-  };
+  const pastelColors = [
+    '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6384',
+  ];
 
-  const handleRadius = (event, newValue) => {
-    setRadius(newValue);
-  };
+  // Fetch user data from localStorage using JWT token
+  const fetchUserData = async () => {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) throw new Error('No authToken found in local storage');
 
-  const handleUserIdChange = (event) => {
-    setUserId(event.target.value);
-  };
+      const decodedToken = jwtDecode(authToken);
+      const email = decodedToken.email;
+      if (!email) throw new Error('Email not found in token');
 
-  const handleFetchCategoryData = async () => {
-    if (!userId) {
-      alert('Please enter a valid User ID');
-      return;
+      const response = await fetch(`http://localhost:3000/api/auth/user/${email}`);
+      if (!response.ok) throw new Error('Failed to fetch user data');
+
+      const [data] = await response.json();
+      console.log('Fetched User Data:', data);
+
+      if (data) {
+        setUserId(data.user_id);
+      } else {
+        throw new Error('User data not found');
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
     }
-  
+  };
+
+  // Fetch category data and calculate percentages
+  const handleFetchCategoryData = async () => {
+    if (!userId) return;
+
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:3000/api/entries/totals/${userId}`);
-      if (response.status === 200) {
-        const transformedData = response.data.map((category) => {
-          const totalAmount = parseFloat(category.totalAmount); // Convert string to number
-          return {
-            label: category.categoryName || `Category ${category.category_id}`, // Default label if categoryName is missing
-            value: totalAmount,
-            formattedValue: String(category.formattedValue?.text || category.formattedValue || totalAmount.toFixed(2)), // Ensures formattedValue is a string
-          };
-        });
-        setCategoryData(transformedData);
-      } else {
-        alert('No data available for this User ID');
-      }
-    } catch (error) {
-      alert('Failed to fetch category data. Please try again later.');
-      console.error('Error fetching category data:', error);
+      const categoryResponse = await axios.get(`http://localhost:3000/api/entries/totals/${userId}`);
+      console.log('Raw API Response:', categoryResponse.data);
+
+      const data = categoryResponse.data;
+      const total = data.reduce((sum, category) => sum + parseFloat(category.totalAmount || 0), 0);
+
+      const transformedData = data.map((category, index) => {
+        const totalAmount = parseFloat(category.totalAmount);
+        const safeTotalAmount = isNaN(totalAmount) ? 0 : totalAmount;
+        const percentage = total > 0 ? (safeTotalAmount / total) * 100 : 0;
+        const safeLabel = category.categoryName || `Category Unknown`;
+
+        return {
+          id: index,
+          label: safeLabel,
+          value: safeTotalAmount,
+          color: pastelColors[index % pastelColors.length], // Assign pastel color
+        };
+      });
+
+      console.log('Transformed Data:', transformedData);
+      setCategoryData(transformedData);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch data.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
-  
-  
 
-  const chartData = categoryData.map((category) => ({
-    label: category.label,
-    value: category.value,
-    formattedValue: category.formattedValue, // You might want to use this for the value label
-  }));
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
-  const valueFormatter = (value) => {
-    const numValue = Number(value);
-    if (!isNaN(numValue)) {
-      return numValue.toFixed(2);
+  useEffect(() => {
+    if (userId) {
+      handleFetchCategoryData();
     }
-    return value;
-  };
+  }, [userId]);
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <TextField
-        label="Enter User ID"
-        variant="outlined"
-        value={userId}
-        onChange={handleUserIdChange}
-        fullWidth
-        margin="normal"
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleFetchCategoryData}
-        sx={{ marginBottom: '20px' }}
-        disabled={loading}
-      >
-        {loading ? 'Loading...' : 'Confirm'}
-      </Button>
-
-      {categoryData.length > 0 ? (
-        <PieChart
-        height={300}
-        series={[
-          {
-            data: chartData,
-            innerRadius: radius,
-            arcLabel: (params) => `${params.label} (${params.formattedValue})`, // Return as a simple string
-            arcLabelMinAngle: 20,
-            valueFormatter, // Ensure `valueFormatter` is formatted correctly as text
-          },
-        ]}
-        skipAnimation={skipAnimation}
-      />
-    ) : (
-      <Typography>No category data available</Typography>
-    )}
-
-      {/* <FormControlLabel
-        checked={skipAnimation}
-        control={<Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />}
-        label="Skip Animation"
-      /> */}
-
-     </Box>
+    <Box className='flex justify-centre align-centre ' sx={{ width: '450px' }} >
+      {loading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error}</p>
+      ) : categoryData.length > 0 ? (
+        <Box >
+          <PieChart
+            series={[
+              {
+                data: categoryData, // Provide the transformed category data
+                innerRadius: 60, // Create the donut effect
+                outerRadius: 100, // Set outer radius to adjust size
+                color: categoryData.map((entry) => entry.color), // Set colors directly in the series
+              },
+            ]}
+            width={450}
+            height={300} // Donut shape
+          />
+          
+        </Box>
+      ) : (
+        <p>No data available to display</p>
+      )}
+    </Box>
   );
 }
